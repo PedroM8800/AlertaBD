@@ -65,8 +65,7 @@ descricao varchar(255)
 ); 
 
 CREATE TABLE Endereco_Funcionario (
-    id_endereco INT PRIMARY KEY AUTO_INCREMENT,
-    cpf CHAR(11),
+    cpf CHAR(11) primary key,
     rua VARCHAR(150) NOT NULL,
     numero VARCHAR(10) NOT NULL,
     complemento VARCHAR(100),
@@ -76,8 +75,7 @@ CREATE TABLE Endereco_Funcionario (
 );
 
 CREATE TABLE Endereco_Ocorrencia (
-    id_endereco INT PRIMARY KEY auto_increment,
-    id_ocorrencia int,
+    id_ocorrencia int primary key,
     rua VARCHAR(150) NOT NULL,
     numero VARCHAR(10) NOT NULL,
     complemento VARCHAR(100),
@@ -87,8 +85,7 @@ CREATE TABLE Endereco_Ocorrencia (
 );
 
 CREATE TABLE Imc (
-    id_imc INT PRIMARY KEY AUTO_INCREMENT,
-    cpf CHAR(11) NOT NULL,
+    cpf CHAR(11) NOT NULL primary key,
     peso_corporal DECIMAL(5,2) NOT NULL,
     altura DECIMAL(4,2) NOT NULL,
     imc DECIMAL(5,2),
