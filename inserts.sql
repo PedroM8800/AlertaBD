@@ -24,10 +24,11 @@ VALUES
 ('23456789012', 'MAT002', 'Mariana Alves', '1988-09-21', 'mariana@empresa.com', 'senha456', '2199883344', 2),
 ('34567890123', 'MAT003', 'João Silva', '1995-01-10', 'joao@empresa.com', 'senha789', '1199775544', 3);
 
-INSERT INTO Endereco (cpf, rua, numero, complemento, id_bairro) VALUES
-('12345678901', 'Rua das Flores', '123', 'Ap 45', 1),
-('23456789012', 'Av. Paulista', '999', NULL, 2),
-('34567890123', 'Rua Atlântica', '888', 'Bloco B', 3);
+
+insert into tipo_ocorrencia (nome_tipo, descricao_tipo) values
+('incendio','florestal'),
+('resgate','Sub-Aquatico'),
+('desabamento','predio');
 
 INSERT INTO Imc (cpf, peso_corporal, altura, imc) VALUES
 ('12345678901', 82.5, 1.80, calcular_imc(82.5, 1.80)),

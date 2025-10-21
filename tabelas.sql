@@ -46,6 +46,7 @@ create table tipo_ocorrencia (
 
 create table Ocorrencia (
 id_ocorrencia int auto_increment primary key,
+titulo varchar (155) not null,
 data_hora datetime not null,
 envolvidos varchar(150),
 detalhes varchar(255),
@@ -84,6 +85,16 @@ CREATE TABLE Endereco_Ocorrencia (
     FOREIGN KEY (id_bairro) REFERENCES Bairro(id_bairro)
 );
 
+create table alteracao_cometida (
+	id_alteracao int not null auto_increment primary key,
+    atuante_principal_cpf char(11) not null,
+    data_e_hora datetime not null,
+    tipo_de_alteracao varchar(150) not null,
+    area_alteracao varchar(150) not null,
+    descricao varchar(255) not null,
+    foreign key (atuante_principal_cpf) references Funcionario(cpf)
+);
+#cabou
 CREATE TABLE Imc (
     cpf CHAR(11) NOT NULL primary key,
     peso_corporal DECIMAL(5,2) NOT NULL,
