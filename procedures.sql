@@ -90,21 +90,21 @@ BEGIN
 END //
 
 CREATE PROCEDURE sp_inserir_ocorrencia (
+	IN p_titulo varchar(155),
     IN p_data_hora DATETIME,
     IN p_envolvidos VARCHAR(150),
     IN p_detalhes VARCHAR(255),
     IN p_status_atual ENUM('Em andamento', 'Encerrada', 'Cancelada'),
     IN p_prioridade ENUM('Baixa', 'Media', 'Alta'),
-    IN p_id_tipo_ocorrencia INT,
-    IN p_id_endereco INT
+    IN p_id_tipo_ocorrencia INT
 )
 BEGIN
-    INSERT INTO Ocorrencia (
+    INSERT INTO Ocorrencia (titulo,
         data_hora, envolvidos, detalhes, status_atual, prioridade,
-        id_tipo_ocorrencia, id_endereco
+        id_tipo_ocorrencia
     ) VALUES (
-        p_data_hora, p_envolvidos, p_detalhes, p_status_atual, p_prioridade,
-        p_id_tipo_ocorrencia, p_id_endereco
+        p_titulo, p_data_hora, p_envolvidos, p_detalhes, p_status_atual, p_prioridade,
+        p_id_tipo_ocorrencia
     );
 END //
 
