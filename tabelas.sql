@@ -40,7 +40,10 @@ CREATE TABLE Funcionario (
 
 create table tipo_ocorrencia (
 	id_tipo_ocorrencia int auto_increment primary key,
-    nome_tipo varchar(100) not null,
+    nome_tipo varchar(100) not null default'null',
+    valor_tipo char(6) not null default'null',
+    subtipo varchar(150) default'null',
+    id_subtipo char(6),
     descricao_tipo varchar(255)
 );
 
