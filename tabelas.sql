@@ -47,6 +47,15 @@ create table tipo_ocorrencia (
     descricao_tipo varchar(255)
 );
 
+CREATE TABLE Endereco_Ocorrencia (
+	id_endereco_ocorrencia int primary key auto_increment,
+    rua VARCHAR(150) NOT NULL,
+    numero VARCHAR(10) NOT NULL,
+    complemento VARCHAR(100),
+    id_bairro INT NOT NULL,
+    FOREIGN KEY (id_bairro) REFERENCES Bairro(id_bairro)
+);
+
 create table Ocorrencia (
 id_ocorrencia int auto_increment primary key,
 titulo varchar (155) not null,
@@ -59,7 +68,12 @@ prioridade enum('Baixa', 'Media', 'Alta'),
 id_tipo_ocorrencia int not null,
 foreign key(id_tipo_ocorrencia) references tipo_ocorrencia(id_tipo_ocorrencia)
 	on update cascade
-	on delete restrict
+	on delete restrict,
+    
+id_endereco_ocorrencia int not null,
+foreign key(id_endereco_ocorrencia) references Endereco_Ocorrencia(id_endereco_ocorrencia)
+	on update cascade
+    on delete restrict
 );
 
 create table Unidade(
@@ -75,16 +89,6 @@ CREATE TABLE Endereco_Funcionario (
     complemento VARCHAR(100),
     id_bairro INT NOT NULL,
     FOREIGN KEY (cpf) REFERENCES Funcionario(cpf),
-    FOREIGN KEY (id_bairro) REFERENCES Bairro(id_bairro)
-);
-
-CREATE TABLE Endereco_Ocorrencia (
-    id_ocorrencia int primary key,
-    rua VARCHAR(150) NOT NULL,
-    numero VARCHAR(10) NOT NULL,
-    complemento VARCHAR(100),
-    id_bairro INT NOT NULL,
-    foreign key (id_ocorrencia) references Ocorrencia(id_ocorrencia),
     FOREIGN KEY (id_bairro) REFERENCES Bairro(id_bairro)
 );
 
