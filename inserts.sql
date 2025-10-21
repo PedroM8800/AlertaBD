@@ -26,9 +26,10 @@ VALUES
 
 
 insert into tipo_ocorrencia (nome_tipo, descricao_tipo) values
-('incendio','florestal'),
-('resgate','Sub-Aquatico'),
-('desabamento','predio');
+('incendio','1'),
+('resgate','2'),
+('APH', '3'),
+('prevenção','4');
 
 INSERT INTO Imc (cpf, peso_corporal, altura, imc) VALUES
 ('12345678901', 82.5, 1.80, calcular_imc(82.5, 1.80)),
