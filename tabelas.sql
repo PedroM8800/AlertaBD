@@ -40,12 +40,25 @@ CREATE TABLE Funcionario (
 
 create table tipo_ocorrencia (
 	id_tipo_ocorrencia int auto_increment primary key,
-    nome_tipo varchar(100) not null,
+    nome_tipo varchar(100) not null default'null',
+    valor_tipo char(6) not null default'null',
+    subtipo varchar(150) default'null',
+    id_subtipo char(6),
     descricao_tipo varchar(255)
+);
+
+CREATE TABLE Endereco_Ocorrencia (
+	id_endereco_ocorrencia int primary key auto_increment,
+    rua VARCHAR(150) NOT NULL,
+    numero VARCHAR(10) NOT NULL,
+    complemento VARCHAR(100),
+    id_bairro INT NOT NULL,
+    FOREIGN KEY (id_bairro) REFERENCES Bairro(id_bairro)
 );
 
 create table Ocorrencia (
 id_ocorrencia int auto_increment primary key,
+titulo varchar (155) not null,
 data_hora datetime not null,
 envolvidos varchar(150),
 detalhes varchar(255),
@@ -55,7 +68,12 @@ prioridade enum('Baixa', 'Media', 'Alta'),
 id_tipo_ocorrencia int not null,
 foreign key(id_tipo_ocorrencia) references tipo_ocorrencia(id_tipo_ocorrencia)
 	on update cascade
-	on delete restrict
+	on delete restrict,
+    
+id_endereco_ocorrencia int not null,
+foreign key(id_endereco_ocorrencia) references Endereco_Ocorrencia(id_endereco_ocorrencia)
+	on update cascade
+    on delete restrict
 );
 
 create table Unidade(
@@ -74,16 +92,16 @@ CREATE TABLE Endereco_Funcionario (
     FOREIGN KEY (id_bairro) REFERENCES Bairro(id_bairro)
 );
 
-CREATE TABLE Endereco_Ocorrencia (
-    id_ocorrencia int primary key,
-    rua VARCHAR(150) NOT NULL,
-    numero VARCHAR(10) NOT NULL,
-    complemento VARCHAR(100),
-    id_bairro INT NOT NULL,
-    foreign key (id_ocorrencia) references Ocorrencia(id_ocorrencia),
-    FOREIGN KEY (id_bairro) REFERENCES Bairro(id_bairro)
+create table alteracao_cometida (
+	id_alteracao int not null auto_increment primary key,
+    atuante_principal_cpf char(11) not null,
+    data_e_hora datetime not null,
+    tipo_de_alteracao varchar(150) not null,
+    area_alteracao varchar(150) not null,
+    descricao varchar(255) not null,
+    foreign key (atuante_principal_cpf) references Funcionario(cpf)
 );
-
+#cabou
 CREATE TABLE Imc (
     cpf CHAR(11) NOT NULL primary key,
     peso_corporal DECIMAL(5,2) NOT NULL,

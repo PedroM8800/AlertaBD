@@ -95,3 +95,34 @@ WHERE status_atual = 'Em andamento';
 CREATE OR REPLACE VIEW vw_unidades AS
 SELECT id_unidade, nome, descricao
 FROM Unidade;
+
+CREATE OR REPLACE VIEW vw_alteracoes_detalhadas AS
+SELECT 
+    a.id_alteracao,
+    a.data_e_hora,
+    a.tipo_de_alteracao,
+    a.area_alteracao,
+    a.descricao,
+    f.cpf AS funcionario_cpf,
+    f.nome AS funcionario_nome,
+    f.cargo AS funcionario_cargo
+FROM alteracao_cometida a
+JOIN Funcionario f ON a.atuante_principal_cpf = f.cpf;
+
+CREATE OR REPLACE VIEW vw_alteracoes_recent AS
+SELECT *
+FROM vw_alteracoes_detalhadas
+WHERE data_e_hora >= NOW() - INTERVAL 7 DAY
+ORDER BY data_e_hora DESC;
+
+CREATE OR REPLACE VIEW vw_alteracoes_por_area AS
+SELECT 
+    area_alteracao,
+    COUNT(*) AS total_alteracoes,
+    MAX(data_e_hora) AS ultima_alteracao
+FROM alteracao_cometida
+GROUP BY area_alteracao
+ORDER BY total_alteracoes DESC;
+
+
+

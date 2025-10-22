@@ -90,7 +90,7 @@ BEGIN
 END //
 
 CREATE PROCEDURE sp_inserir_ocorrencia (
-	IN p_titulo varchar(155),
+    in p_titulo varchar(155),
     IN p_data_hora DATETIME,
     IN p_envolvidos VARCHAR(150),
     IN p_detalhes VARCHAR(255),
@@ -99,17 +99,18 @@ CREATE PROCEDURE sp_inserir_ocorrencia (
     IN p_id_tipo_ocorrencia INT
 )
 BEGIN
-    INSERT INTO Ocorrencia (titulo,
-        data_hora, envolvidos, detalhes, status_atual, prioridade,
-        id_tipo_ocorrencia
+    INSERT INTO Ocorrencia (
+        titulo, data_hora, envolvidos, detalhes, status_atual, prioridade,
+        id_tipo_ocorrencia, id_endereco
     ) VALUES (
         p_titulo, p_data_hora, p_envolvidos, p_detalhes, p_status_atual, p_prioridade,
-        p_id_tipo_ocorrencia
+        p_id_tipo_ocorrencia, p_id_endereco
     );
 END //
 
 CREATE PROCEDURE sp_atualizar_ocorrencia (
     IN p_id_ocorrencia INT,
+    in p_titulo varchar(155),
     IN p_data_hora DATETIME,
     IN p_envolvidos VARCHAR(150),
     IN p_detalhes VARCHAR(255),
@@ -120,7 +121,8 @@ CREATE PROCEDURE sp_atualizar_ocorrencia (
 )
 BEGIN
     UPDATE Ocorrencia
-    SET data_hora = p_data_hora,
+    SET titulo = p_titulo,
+		data_hora = p_data_hora,
         envolvidos = p_envolvidos,
         detalhes = p_detalhes,
         status_atual = p_status_atual,
@@ -143,6 +145,7 @@ CREATE PROCEDURE sp_consultar_ocorrencia (
 )
 BEGIN
     SELECT o.id_ocorrencia,
+		   o.titulo,
            o.data_hora,
            o.envolvidos,
            o.detalhes,
@@ -192,6 +195,91 @@ CREATE PROCEDURE sp_consultar_unidade (
 BEGIN
     SELECT * FROM Unidade
     WHERE id_unidade = p_id_unidade;
+END //
+
+CREATE PROCEDURE sp_inserir_alteracao (
+    IN p_atuante_principal_cpf CHAR(11),
+    IN p_data_e_hora DATETIME,
+    IN p_tipo_de_alteracao VARCHAR(150),
+    IN p_area_alteracao VARCHAR(150),
+    IN p_descricao VARCHAR(255)
+)
+BEGIN
+    INSERT INTO alteracao_cometida (
+        atuante_principal_cpf, data_e_hora, tipo_de_alteracao, area_alteracao, descricao
+    ) VALUES (
+        p_atuante_principal_cpf, p_data_e_hora, p_tipo_de_alteracao, p_area_alteracao, p_descricao
+    );
+END //
+
+CREATE PROCEDURE sp_atualizar_alteracao (
+    IN p_id_alteracao INT,
+    IN p_atuante_principal_cpf CHAR(11),
+    IN p_data_e_hora DATETIME,
+    IN p_tipo_de_alteracao VARCHAR(150),
+    IN p_area_alteracao VARCHAR(150),
+    IN p_descricao VARCHAR(255)
+)
+BEGIN
+    UPDATE alteracao_cometida
+    SET atuante_principal_cpf = p_atuante_principal_cpf,
+        data_e_hora = p_data_e_hora,
+        tipo_de_alteracao = p_tipo_de_alteracao,
+        area_alteracao = p_area_alteracao,
+        descricao = p_descricao
+    WHERE id_alteracao = p_id_alteracao;
+END //
+
+CREATE PROCEDURE sp_excluir_alteracao (
+    IN p_id_alteracao INT
+)
+BEGIN
+    DELETE FROM alteracao_cometida
+    WHERE id_alteracao = p_id_alteracao;
+END //
+
+CREATE PROCEDURE sp_consultar_alteracao (
+    IN p_id_alteracao INT
+)
+BEGIN
+    SELECT a.id_alteracao,
+           a.data_e_hora,
+           a.tipo_de_alteracao,
+           a.area_alteracao,
+           a.descricao,
+           f.cpf,
+           f.nome AS nome_funcionario
+    FROM alteracao_cometida a
+    JOIN Funcionario f ON a.atuante_principal_cpf = f.cpf
+    WHERE a.id_alteracao = p_id_alteracao;
+END //
+
+CREATE PROCEDURE sp_listar_alteracoes (
+    IN p_area_filtro VARCHAR(150)
+)
+BEGIN
+    IF p_area_filtro IS NULL OR p_area_filtro = '' THEN
+        SELECT a.id_alteracao,
+               a.data_e_hora,
+               a.tipo_de_alteracao,
+               a.area_alteracao,
+               a.descricao,
+               f.nome AS nome_funcionario
+        FROM alteracao_cometida a
+        JOIN Funcionario f ON a.atuante_principal_cpf = f.cpf
+        ORDER BY a.data_e_hora DESC;
+    ELSE
+        SELECT a.id_alteracao,
+               a.data_e_hora,
+               a.tipo_de_alteracao,
+               a.area_alteracao,
+               a.descricao,
+               f.nome AS nome_funcionario
+        FROM alteracao_cometida a
+        JOIN Funcionario f ON a.atuante_principal_cpf = f.cpf
+        WHERE a.area_alteracao = p_area_filtro
+        ORDER BY a.data_e_hora DESC;
+    END IF;
 END //
 
 DELIMITER ;
