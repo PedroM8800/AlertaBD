@@ -96,8 +96,7 @@ CREATE PROCEDURE sp_inserir_ocorrencia (
     IN p_detalhes VARCHAR(255),
     IN p_status_atual ENUM('Em andamento', 'Encerrada', 'Cancelada'),
     IN p_prioridade ENUM('Baixa', 'Media', 'Alta'),
-    IN p_id_tipo_ocorrencia INT,
-    IN p_id_endereco INT
+    IN p_id_tipo_ocorrencia INT
 )
 BEGIN
     INSERT INTO Ocorrencia (

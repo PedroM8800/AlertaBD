@@ -1,4 +1,3 @@
-
 CREATE OR REPLACE VIEW vw_funcionarios_cargos AS
 SELECT 
     f.cpf,
@@ -19,7 +18,7 @@ SELECT
     es.nome AS estado,
     es.sigla
 FROM Funcionario f
-JOIN Endereco e ON f.cpf = e.cpf
+JOIN endereco_funcionario e ON f.cpf = e.cpf
 JOIN Bairro b ON e.id_bairro = b.id_bairro
 JOIN Cidade ci ON b.id_cidade = ci.id_cidade
 JOIN Estado es ON ci.id_estado = es.id_estado;
@@ -58,12 +57,14 @@ SELECT
     i.imc
 FROM Funcionario f
 LEFT JOIN Cargo c ON f.id_cargo = c.id_cargo
-LEFT JOIN Endereco e ON f.cpf = e.cpf
+LEFT JOIN endereco_funcionario e ON f.cpf = e.cpf
 LEFT JOIN Bairro b ON e.id_bairro = b.id_bairro
 LEFT JOIN Cidade ci ON b.id_cidade = ci.id_cidade
 LEFT JOIN Estado es ON ci.id_estado = es.id_estado
 LEFT JOIN Imc i ON f.cpf = i.cpf;
 
+# ARRUMAR!!!
+/*
 CREATE OR REPLACE VIEW vw_ocorrencias_completas AS
 SELECT 
     o.id_ocorrencia,
@@ -81,11 +82,15 @@ SELECT
 FROM Ocorrencia o
 JOIN tipo_ocorrencia t ON o.id_tipo_ocorrencia = t.id_tipo_ocorrencia
 JOIN Endereco_Ocorrencia e ON o.id_endereco = e.id_endereco;
+*/
 
+# PRECISA DA VIEW vw_ocorrencias_completas
+/*
 CREATE OR REPLACE VIEW vw_ocorrencias_ativas AS
 SELECT *
 FROM vw_ocorrencias_completas
 WHERE status_atual = 'Em andamento';
+*/
 
 CREATE OR REPLACE VIEW vw_unidades AS
 SELECT id_unidade, nome, descricao
