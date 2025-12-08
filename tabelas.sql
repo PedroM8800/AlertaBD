@@ -82,15 +82,15 @@ create table tipo_ocorrencia (
 
 CREATE TABLE Endereco_Ocorrencia (
     id_endereco_ocorrencia int primary key auto_increment,
-    -- Campos restaurados para endereço legível
-    rua VARCHAR(150) NOT NULL,
-    numero VARCHAR(10) NOT NULL,
-    complemento VARCHAR(100),
-    -- Referência ao Bairro
-    id_bairro INT NOT NULL,
     -- Geolocalização
     latitude DECIMAL(10, 8) NOT NULL,
     longitude DECIMAL(10, 8) NOT NULL,
+    -- Campos restaurados para endereço legível
+    rua VARCHAR(150),
+    numero VARCHAR(10),
+    complemento VARCHAR(100),
+    -- Referência ao Bairro
+    id_bairro INT,
     -- Chave Estrangeira Corrigida
     FOREIGN KEY (id_bairro) REFERENCES Bairro(id_bairro)
 );
@@ -101,8 +101,8 @@ create table Ocorrencia (
     data_hora datetime not null,
     envolvidos varchar(150),
     detalhes varchar(255),
-    status_atual enum('Em andamento', 'Encerrada', 'Cancelada'),
-    prioridade enum('Baixa', 'Media', 'Alta'),
+    status_atual enum('Em andamento', 'Encerrada', 'Cancelada') not null,
+    prioridade enum('Baixa', 'Media', 'Alta') not null,
 
     id_tipo_ocorrencia int not null,
     foreign key(id_tipo_ocorrencia) references tipo_ocorrencia(id_tipo_ocorrencia)
