@@ -1,5 +1,6 @@
-CREATE DATABASE IF NOT EXISTS AlertaCon;
-USE AlertaCon;
+/* ----------------------------------- */
+/* 1. Tabelas de Localização (GEO)     */
+/* ----------------------------------- */
 
 CREATE TABLE Estado (
     id_estado INT PRIMARY KEY AUTO_INCREMENT,
@@ -21,6 +22,10 @@ CREATE TABLE Bairro (
     FOREIGN KEY (id_cidade) REFERENCES Cidade(id_cidade)
 );
 
+/* ----------------------------------- */
+/* 2. Tabelas de Funcionário           */
+/* ----------------------------------- */
+
 CREATE TABLE Cargo (
     id_cargo INT PRIMARY KEY AUTO_INCREMENT,
     nome_cargo VARCHAR(100) NOT NULL
@@ -38,8 +43,36 @@ CREATE TABLE Funcionario (
     FOREIGN KEY (id_cargo) REFERENCES Cargo(id_cargo)
 );
 
+CREATE TABLE Endereco_Funcionario (
+    cpf CHAR(11) primary key,
+    -- Campos restaurados para endereço legível
+    rua VARCHAR(150), 
+    numero VARCHAR(10), 
+    complemento VARCHAR(100),
+    -- Referência ao Bairro
+    id_bairro INT NOT NULL,
+    -- Geolocalização
+    latitude DECIMAL(10, 8),
+    longitude DECIMAL(10, 8),
+    -- Chaves Estrangeiras Corrigidas
+    FOREIGN KEY (cpf) REFERENCES Funcionario(cpf),
+    FOREIGN KEY (id_bairro) REFERENCES Bairro(id_bairro)
+);
+
+CREATE TABLE Imc (
+    cpf CHAR(11) NOT NULL primary key,
+    peso_corporal DECIMAL(5,2) NOT NULL,
+    altura DECIMAL(4,2) NOT NULL,
+    imc DECIMAL(5,2),
+    FOREIGN KEY (cpf) REFERENCES Funcionario(cpf)
+);
+
+/* ----------------------------------- */
+/* 3. Tabelas de Ocorrência            */
+/* ----------------------------------- */
+
 create table tipo_ocorrencia (
-	id_tipo_ocorrencia int auto_increment primary key,
+    id_tipo_ocorrencia int auto_increment primary key,
     nome_tipo varchar(100) not null default'null',
     valor_tipo char(6) not null default'null',
     subtipo varchar(150) default'null',
@@ -48,66 +81,58 @@ create table tipo_ocorrencia (
 );
 
 CREATE TABLE Endereco_Ocorrencia (
-	id_endereco_ocorrencia int primary key auto_increment,
+    id_endereco_ocorrencia int primary key auto_increment,
+    -- Campos restaurados para endereço legível
     rua VARCHAR(150) NOT NULL,
     numero VARCHAR(10) NOT NULL,
     complemento VARCHAR(100),
+    -- Referência ao Bairro
     id_bairro INT NOT NULL,
+    -- Geolocalização
+    latitude DECIMAL(10, 8) NOT NULL,
+    longitude DECIMAL(10, 8) NOT NULL,
+    -- Chave Estrangeira Corrigida
     FOREIGN KEY (id_bairro) REFERENCES Bairro(id_bairro)
 );
 
 create table Ocorrencia (
-id_ocorrencia int auto_increment primary key,
-titulo varchar (155) not null,
-data_hora datetime not null,
-envolvidos varchar(150),
-detalhes varchar(255),
-status_atual enum('Em andamento', 'Encerrada', 'Cancelada'),
-prioridade enum('Baixa', 'Media', 'Alta'),
+    id_ocorrencia int auto_increment primary key,
+    titulo varchar (155) not null,
+    data_hora datetime not null,
+    envolvidos varchar(150),
+    detalhes varchar(255),
+    status_atual enum('Em andamento', 'Encerrada', 'Cancelada'),
+    prioridade enum('Baixa', 'Media', 'Alta'),
 
-id_tipo_ocorrencia int not null,
-foreign key(id_tipo_ocorrencia) references tipo_ocorrencia(id_tipo_ocorrencia)
-	on update cascade
-	on delete restrict,
-    
-id_endereco_ocorrencia int not null,
-foreign key(id_endereco_ocorrencia) references Endereco_Ocorrencia(id_endereco_ocorrencia)
-	on update cascade
-    on delete restrict
+    id_tipo_ocorrencia int not null,
+    foreign key(id_tipo_ocorrencia) references tipo_ocorrencia(id_tipo_ocorrencia)
+        on update cascade
+        on delete restrict,
+        
+    id_endereco_ocorrencia int not null,
+    foreign key(id_endereco_ocorrencia) references Endereco_Ocorrencia(id_endereco_ocorrencia)
+        on update cascade
+        on delete restrict
 );
 
 create table Unidade(
-id_unidade int auto_increment primary key,
-nome varchar(150),
-descricao varchar(255)
-); 
+    id_unidade int auto_increment primary key,
+    nome varchar(150),
+    descricao varchar(255)
+);  
 
-CREATE TABLE Endereco_Funcionario (
-    cpf CHAR(11) primary key,
-    rua VARCHAR(150) NOT NULL,
-    numero VARCHAR(10) NOT NULL,
-    complemento VARCHAR(100),
-    id_bairro INT NOT NULL,
-    FOREIGN KEY (cpf) REFERENCES Funcionario(cpf),
-    FOREIGN KEY (id_bairro) REFERENCES Bairro(id_bairro)
-);
+/* ----------------------------------- */
+/* 4. Tabela de Auditoria e Funções    */
+/* ----------------------------------- */
 
 create table alteracao_cometida (
-	id_alteracao int not null auto_increment primary key,
+    id_alteracao int not null auto_increment primary key,
     atuante_principal_cpf char(11) not null,
     data_e_hora datetime not null,
     tipo_de_alteracao varchar(150) not null,
     area_alteracao varchar(150) not null,
     descricao varchar(255) not null,
     foreign key (atuante_principal_cpf) references Funcionario(cpf)
-);
-#cabou
-CREATE TABLE Imc (
-    cpf CHAR(11) NOT NULL primary key,
-    peso_corporal DECIMAL(5,2) NOT NULL,
-    altura DECIMAL(4,2) NOT NULL,
-    imc DECIMAL(5,2),
-    FOREIGN KEY (cpf) REFERENCES Funcionario(cpf)
 );
 
 DELIMITER $$

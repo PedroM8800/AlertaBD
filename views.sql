@@ -1,128 +1,70 @@
-CREATE OR REPLACE VIEW vw_funcionarios_cargos AS
-SELECT 
-    f.cpf,
-    f.nome,
-    f.matricula,
-    c.nome_cargo
-FROM Funcionario f
-JOIN Cargo c ON f.id_cargo = c.id_cargo;
-
-CREATE OR REPLACE VIEW vw_funcionarios_enderecos AS
-SELECT 
-    f.nome,
-    e.rua,
-    e.numero,
-    e.complemento,
-    b.nome AS bairro,
-    ci.nome AS cidade,
-    es.nome AS estado,
-    es.sigla
-FROM Funcionario f
-JOIN endereco_funcionario e ON f.cpf = e.cpf
-JOIN Bairro b ON e.id_bairro = b.id_bairro
-JOIN Cidade ci ON b.id_cidade = ci.id_cidade
-JOIN Estado es ON ci.id_estado = es.id_estado;
-
-CREATE OR REPLACE VIEW vw_funcionarios_imc AS
-SELECT 
-    f.nome,
-    i.peso_corporal AS peso,
-    i.altura,
-    i.imc,
-    CASE
-        WHEN i.imc < 18.5 THEN 'Abaixo do peso'
-        WHEN i.imc BETWEEN 18.5 AND 24.9 THEN 'Peso normal'
-        WHEN i.imc BETWEEN 25 AND 29.9 THEN 'Sobrepeso'
-        ELSE 'Obesidade'
-    END AS classificacao
-FROM Funcionario f
-JOIN Imc i ON f.cpf = i.cpf;
-
-CREATE OR REPLACE VIEW vw_funcionarios_completos AS
-SELECT 
-    f.matricula,
-    f.nome,
-    f.cpf,
-    f.email,
-    f.data_nascimento,
-    f.numero_telefone,
-    c.nome_cargo,
-    e.rua,
-    e.numero,
-    b.nome AS bairro,
-    ci.nome AS cidade,
-    es.nome AS estado,
-    i.peso_corporal,
-    i.altura,
-    i.imc
-FROM Funcionario f
-LEFT JOIN Cargo c ON f.id_cargo = c.id_cargo
-LEFT JOIN endereco_funcionario e ON f.cpf = e.cpf
-LEFT JOIN Bairro b ON e.id_bairro = b.id_bairro
-LEFT JOIN Cidade ci ON b.id_cidade = ci.id_cidade
-LEFT JOIN Estado es ON ci.id_estado = es.id_estado
-LEFT JOIN Imc i ON f.cpf = i.cpf;
-
-# ARRUMAR!!!
-/*
-CREATE OR REPLACE VIEW vw_ocorrencias_completas AS
-SELECT 
-    o.id_ocorrencia,
-    o.data_hora,
-    o.envolvidos,
-    o.detalhes,
-    o.status_atual,
-    o.prioridade,
-    t.nome_tipo AS tipo_ocorrencia,
-    e.logradouro,
-    e.numero,
-    e.bairro,
-    e.cidade,
-    e.estado
-FROM Ocorrencia o
-JOIN tipo_ocorrencia t ON o.id_tipo_ocorrencia = t.id_tipo_ocorrencia
-JOIN Endereco_Ocorrencia e ON o.id_endereco = e.id_endereco;
-*/
-
-# PRECISA DA VIEW vw_ocorrencias_completas
-/*
-CREATE OR REPLACE VIEW vw_ocorrencias_ativas AS
-SELECT *
-FROM vw_ocorrencias_completas
-WHERE status_atual = 'Em andamento';
-*/
-
-CREATE OR REPLACE VIEW vw_unidades AS
-SELECT id_unidade, nome, descricao
-FROM Unidade;
-
-CREATE OR REPLACE VIEW vw_alteracoes_detalhadas AS
-SELECT 
-    a.id_alteracao,
-    a.data_e_hora,
-    a.tipo_de_alteracao,
-    a.area_alteracao,
-    a.descricao,
-    f.cpf AS funcionario_cpf,
-    f.nome AS funcionario_nome,
-    f.cargo AS funcionario_cargo
-FROM alteracao_cometida a
-JOIN Funcionario f ON a.atuante_principal_cpf = f.cpf;
-
-CREATE OR REPLACE VIEW vw_alteracoes_recent AS
-SELECT *
-FROM vw_alteracoes_detalhadas
-WHERE data_e_hora >= NOW() - INTERVAL 7 DAY
-ORDER BY data_e_hora DESC;
-
-CREATE OR REPLACE VIEW vw_alteracoes_por_area AS
-SELECT 
-    area_alteracao,
-    COUNT(*) AS total_alteracoes,
-    MAX(data_e_hora) AS ultima_alteracao
-FROM alteracao_cometida
-GROUP BY area_alteracao
-ORDER BY total_alteracoes DESC;
-
-
-
+CREATE OR REPLACE VIEW vw_detalhes_ocorrencia AS
+SELECT
+    O.id_ocorrencia,
+    O.titulo,
+    O.data_hora,
+    O.status_atual,
+    O.prioridade,
+    O.detalhes, 
+    O.envolvidos,
+    TOC.nome_tipo AS tipo_principal,
+    TOC.valor_tipo AS codigo_tipo,
+    TOC.subtipo,
+    TOC.id_subtipo AS codigo_subtipo,
+    EO.rua,
+    EO.numero,
+    EO.complemento,
+    EO.latitude,
+    EO.longitude,
+    B.nome AS nome_bairro,
+    C.nome AS nome_cidade,
+    E.sigla AS sigla_estado
+FROM 
+    Ocorrencia O
+JOIN 
+    tipo_ocorrencia TOC ON O.id_tipo_ocorrencia = TOC.id_tipo_ocorrencia -- Aqui está a mudança
+JOIN 
+    Endereco_Ocorrencia EO ON O.id_endereco_ocorrencia = EO.id_endereco_ocorrencia
+JOIN 
+    Bairro B ON EO.id_bairro = B.id_bairro
+JOIN 
+    Cidade C ON B.id_cidade = C.id_cidade
+JOIN 
+    Estado E ON C.id_estado = E.id_estado;
+CREATE VIEW vw_detalhes_funcionario AS
+SELECT
+    F.matricula,
+    F.nome,
+    F.cpf,
+    F.email,
+    F.numero_telefone,
+    C.nome_cargo,
+    EF.rua,
+    EF.numero,
+    EF.latitude,
+    EF.longitude,
+    IMC.peso_corporal,
+    IMC.altura,
+    IMC.imc
+FROM 
+    Funcionario F
+JOIN 
+    Cargo C ON F.id_cargo = C.id_cargo
+LEFT JOIN 
+    Endereco_Funcionario EF ON F.cpf = EF.cpf
+LEFT JOIN 
+    Imc IMC ON F.cpf = IMC.cpf;
+    
+    CREATE VIEW vw_log_alteracoes_funcionario AS
+SELECT
+    AC.id_alteracao,
+    F.nome AS atuante_principal,
+    F.matricula AS matricula_atuante,
+    AC.data_e_hora,
+    AC.tipo_de_alteracao,
+    AC.area_alteracao,
+    AC.descricao
+FROM 
+    alteracao_cometida AC
+JOIN 
+    Funcionario F ON AC.atuante_principal_cpf = F.cpf;

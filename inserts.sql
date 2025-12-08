@@ -104,4 +104,3 @@ insert into tipo_ocorrencia (nome_tipo, descricao_tipo) values
 ('incendio','florestal'),
 ('resgate','Sub-Aquatico'),
 ('desabamento','predio');
-
