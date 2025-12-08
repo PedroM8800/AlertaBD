@@ -103,6 +103,7 @@ create table Ocorrencia (
     detalhes varchar(255),
     status_atual enum('Em andamento', 'Encerrada', 'Cancelada') not null,
     prioridade enum('Baixa', 'Media', 'Alta') not null,
+	pasta_recursos varchar(60),
 
     id_tipo_ocorrencia int not null,
     foreign key(id_tipo_ocorrencia) references tipo_ocorrencia(id_tipo_ocorrencia)

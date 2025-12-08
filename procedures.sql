@@ -28,6 +28,7 @@ CREATE PROCEDURE sp_registrar_ocorrencia (
     IN p_detalhes VARCHAR(255),
     IN p_status_atual ENUM('Em andamento', 'Encerrada', 'Cancelada'),
     IN p_prioridade ENUM('Baixa', 'Media', 'Alta'),
+    IN p_pasta_recursos VARCHAR(60),
     IN p_id_tipo_ocorrencia INT,
     IN p_latitude DECIMAL(10, 8),
     IN p_longitude DECIMAL(10, 8)
@@ -36,15 +37,15 @@ BEGIN
     DECLARE v_id_endereco INT;
 
     -- 1. Insere o Endereço da Ocorrência
-    INSERT INTO Endereco_Ocorrencia (rua, numero, complemento, id_bairro, latitude, longitude)
-    VALUES (p_rua, p_numero, p_complementoendereco_ocorrencia, p_id_bairro, p_latitude, p_longitude);
+    INSERT INTO Endereco_Ocorrencia (latitude, longitude)
+    VALUES (p_latitude, p_longitude);
 
     -- Pega o ID do endereço recém-inserido
     SET v_id_endereco = LAST_INSERT_ID();
 
     -- 2. Insere a Ocorrência
-    INSERT INTO Ocorrencia (titulo, data_hora, envolvidos, detalhes, status_atual, prioridade, id_tipo_ocorrencia, id_endereco_ocorrencia)
-    VALUES (p_titulo, p_data_hora, p_envolvidos, p_detalhes, p_status_atual, p_prioridade, p_id_tipo_ocorrencia, v_id_endereco);
+    INSERT INTO Ocorrencia (titulo, data_hora, envolvidos, detalhes, status_atual, prioridade, pasta_recursos, id_tipo_ocorrencia, id_endereco_ocorrencia)
+    VALUES (p_titulo, p_data_hora, p_envolvidos, p_detalhes, p_status_atual, p_prioridade, p_pasta_recursos, p_id_tipo_ocorrencia, v_id_endereco);
 END $$
 DELIMITER ;
 
