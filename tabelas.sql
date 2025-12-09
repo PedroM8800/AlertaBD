@@ -101,12 +101,12 @@ create table Ocorrencia (
     data_hora datetime not null,
     envolvidos varchar(150),
     detalhes varchar(255),
-    status_atual enum('Em andamento', 'Encerrada', 'Cancelada') not null,
+    status_atual enum('Em_andamento', 'Encerrada', 'Cancelada') not null,
     prioridade enum('Baixa', 'Media', 'Alta') not null,
 	pasta_recursos varchar(60),
 
     id_tipo_ocorrencia int not null,
-    foreign key(id_tipo_ocorrencia) references tipo_ocorrencia(id_tipo_ocorrencia)
+    foreign key(id_tipo_ocorrencia) references tipo_ocorrencia(id_tipo_ocorrencia)tipo_ocorrencia
         on update cascade
         on delete restrict,
         
